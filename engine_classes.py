@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 from connector import Connector
 import requests
-from utils import filter_for_data
+#from utils import filter_for_data
+import json
 
 
 class Engine(ABC):
@@ -84,9 +85,8 @@ class Superjob(Engine):
 
 
 if __name__ == '__main__':
-    hh_engine = HH()
-    result = hh_engine.get_request()
-    print(result)
-    sj_engine = Superjob()
-    result = sj_engine.get_request()
-    print(result)
+    with open('hh_vacancies.json', encoding='utf-8') as file:
+        read_file = json.load(file)
+        for i in read_file[0]:
+            if i['salary']:
+                print(i['salary']["currency"])

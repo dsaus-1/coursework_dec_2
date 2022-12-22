@@ -78,12 +78,28 @@ def init_hh_vacancy_class(file_name, class_name):
         for vacancy in file_read[0]:
 
             try:
-                address = vacancy[address].get(city)
+                name = vacancy.get(name)
             except:
                 address = None
             if file_name == 'hh_vacancies.json':
-
-                vcnc_new = {'name': vacancy.get(name), 'url': vacancy.get(url)}
+                try:
+                    description = vacancy[description].get(description_1) + ' ' + vacancy[description].get(description_2)
+                except:
+                    description = None
+                try:
+                    if vacancy.get(salary_from)['from']:
+                        salary = vacancy.get(salary_from)['from']
+                    elif vacancy.get(salary_to)['to']:
+                        salary = vacancy.get(salary_from)['to']
+                    if vacancy.get(salary_from)["currency"] == 'USD':
+                        salary *= 72
+                    elif vacancy.get(salary_from)["currency"] == 'EUR':
+                        salary *= 77
+                    elif vacancy.get(salary_from)["currency"] == 'KZT':
+                        salary *= 0.15
+                except:
+                    salary = 0
+            yield class_name(vacancy.get(name), vacancy.get(url), description, salary)
 
 
 #filter_for_data('sj_vacancies.json', 'profession', 'payment_from', 'payment_to', 'town', 'title', 'link', 'candidat')

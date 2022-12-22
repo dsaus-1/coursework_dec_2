@@ -38,7 +38,7 @@ class HHVacancy(Vacancy, CountMixin):
     json_file_name = 'hh_vacancies.json'
 
     def __str__(self):
-        return f'HH: {self.comany_name}, зарплата: {self.salary} руб/мес'
+        return f'HH: {self.company_name}, зарплата: {self.salary} руб/мес'
 
 
 
@@ -47,7 +47,7 @@ class SJVacancy(Vacancy, CountMixin):
     json_file_name = 'sj_vacancies.json'
 
     def __str__(self):
-        return f'SJ: {self.comany_name}, зарплата: {self.salary} руб/мес'
+        return f'SJ: {self.company_name}, зарплата: {self.salary} руб/мес'
 
 
 def sorting(vacancies):
