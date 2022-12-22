@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 from connector import Connector
 import requests
-import json
+from utils import filter_for_data
 
 
 class Engine(ABC):
     key_word = 'python'
     per_page = 20
-    vacancies_count = 100
+    vacancies_count = 20
     @abstractmethod
     def get_request(self):
         '''
@@ -49,6 +49,7 @@ class Engine(ABC):
                 json_file = response.json()
                 result += json_file.get(get_vacancies)
         create_file = self.get_connector(self.json_file_name)
+
         create_file.insert(result)
         return f'В файл {self.json_file_name} записано {len(result)} вакансий'
 
@@ -60,7 +61,9 @@ class HH(Engine):
         url = f'{self.__url}?text={self.key_word}'
         headers = {}
         get_vacancies = 'items'
-        return self.helper_func_request(url, headers, get_vacancies)
+        self.helper_func_request(url, headers, get_vacancies)
+        #filter_for_data(self.json_file_name, 'name', 'salary', 'salary', 'address', 'city', 'alternate_url', 'snippet', 'requirement', 'responsibility')
+        return f'В файл {self.json_file_name} записано и отфильтровано Н вакансий'
 
 
 
@@ -74,7 +77,9 @@ class Superjob(Engine):
                    'Authorization': 'Bearer r.000000010000001.example.access_token',
                    'Content-Type': 'application/x-www-form-urlencoded'}
         get_vacancies = 'objects'
-        return self.helper_func_request(url, headers, get_vacancies)
+        self.helper_func_request(url, headers, get_vacancies)
+        #filter_for_data(self.json_file_name, 'profession', 'payment_from', 'payment_to', 'town', 'title', 'link', 'candidat')
+        return f'В файл {self.json_file_name} записано и отфильтровано Н вакансий'
 
 
 
