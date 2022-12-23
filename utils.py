@@ -1,105 +1,77 @@
+from jobs_classes import *
 import json
 
-def filter_for_data(file_name, name, salary_from, salary_to, address, city, url, description, description_1=None, description_2=None):
-    result = []
+def sorting(vacancies: list):
+    """ Должен сортировать любой список вакансий по ежемесячной оплате (gt, lt magic methods) """
+    return sorted(vacancies, reverse=True)
+
+
+def get_top(vacancies: list, top_count: int):
+    """ Должен возвращать {top_count} записей из вакансий по зарплате (iter, next magic methods) """
+    count = 0
+    while count < top_count:
+        print(vacancies[count], end= '\n\n')
+        count += 1
+
+
+
+
+def init_hh_vacancy_class(file_name: str):
     with open(file_name, 'r', encoding='utf-8') as file:
         file_read = json.load(file)
-
         for vacancy in file_read[0]:
-            vcnc_new = {'name': vacancy.get(name), 'url': vacancy.get(url)}
+            url = vacancy.get('alternate_url')
+            name = vacancy.get('name')
+            try:
+                description = vacancy['snippet'].get('requirement') + ' ' + vacancy['snippet'].get('responsibility')
+            except:
+                description = None
+            try:
+                if vacancy['salary'].get('from'):
+                    salary = vacancy['salary'].get('from')
+                elif vacancy['salary'].get('to'):
+                    salary = vacancy['salary'].get('to')
+                if vacancy['salary'].get("currency") == 'USD':
+                    salary *= 72
+                elif vacancy['salary'].get("currency") == 'EUR':
+                    salary *= 77
+                elif vacancy['salary'].get("currency") == 'KZT':
+                    salary *= 0.15
+            except:
+                salary = 0
 
             try:
-                vcnc_new['address'] = vacancy[address].get(city)
+                company_name = vacancy['employer'].get('name')
             except:
-                vcnc_new['address'] = None
+                company_name = None
+            HHVacancy.data.append(HHVacancy(name, url, description, salary, company_name))
+        return HHVacancy.data
 
-            if salary_from == salary_to:
-
-                try:
-                    salary_from = vacancy[salary_from].get('from')
-                except:
-                    salary_from = 0
-                try:
-                    salary_to = vacancy[salary_to].get('to')
-                except:
-                    salary_to = 0
-                try:
-                    vcnc_new['description'] = vacancy[description].get(description_1) + ' ' + vacancy[description].get(description_2)
-                except:
-                    vcnc_new['description'] = None
-
-            else:
-                try:
-                    salary_from = vacancy[salary_from]
-                except:
-                    salary_from = 0
-                try:
-                    salary_to = vacancy[salary_to]
-                except:
-                    salary_to = 0
-                try:
-                    vcnc_new['description'] = vacancy[description]
-                except:
-                    vcnc_new['description'] = None
-
-            if not salary_to:
-                vcnc_new['salary'] = salary_from
-            else:
-                vcnc_new['salary'] = salary_to
-
-            result.append(vcnc_new)
-
-    with open(file_name, 'w', encoding='utf-8') as write_file:
-        json.dump(result, write_file)
-
-
-def init_hh_vacancy_class(file_name, class_name):
+def init_sj_vacancy_class(file_name: str):
     with open(file_name, 'r', encoding='utf-8') as file:
         file_read = json.load(file)
-        if file_name == 'hh_vacancies.json':
-            name = 'name'
-            salary_from = 'salary'
-            salary_to = 'salary'
-            # address = 'address'
-            # city = 'city'
-            url = 'alternate_url'
-            description = 'snippet'
-            description_1 = 'requirement'
-            description_2 = 'responsibility'
-        else:
-            name = 'profession'
-            salary_from = 'payment_from'
-            salary_to = 'payment_to'
-            # address = 'address'
-            # city = 'city'
-            url = 'link'
-            description = 'candidat'
-
         for vacancy in file_read[0]:
+            url = vacancy.get('link')
+            name = vacancy.get('profession')
+            try:
+                description = vacancy.get('candidat')
+            except:
+                description = None
+            try:
+                if vacancy.get('payment_from'):
+                    salary = vacancy.get('payment_from')
+                elif vacancy.get('payment_to'):
+                    salary = vacancy.get('payment_to')
+            except:
+                salary = 0
 
             try:
-                name = vacancy.get(name)
+                company_name = vacancy.get('firm_name')
             except:
-                address = None
-            if file_name == 'hh_vacancies.json':
-                try:
-                    description = vacancy[description].get(description_1) + ' ' + vacancy[description].get(description_2)
-                except:
-                    description = None
-                try:
-                    if vacancy.get(salary_from)['from']:
-                        salary = vacancy.get(salary_from)['from']
-                    elif vacancy.get(salary_to)['to']:
-                        salary = vacancy.get(salary_from)['to']
-                    if vacancy.get(salary_from)["currency"] == 'USD':
-                        salary *= 72
-                    elif vacancy.get(salary_from)["currency"] == 'EUR':
-                        salary *= 77
-                    elif vacancy.get(salary_from)["currency"] == 'KZT':
-                        salary *= 0.15
-                except:
-                    salary = 0
-            yield class_name(vacancy.get(name), vacancy.get(url), description, salary)
+                company_name = None
+            SJVacancy.data.append(HHVacancy(name, url, description, salary, company_name))
+        return SJVacancy.data
 
 
-#filter_for_data('sj_vacancies.json', 'profession', 'payment_from', 'payment_to', 'town', 'title', 'link', 'candidat')
+
+

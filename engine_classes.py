@@ -1,14 +1,13 @@
 from abc import ABC, abstractmethod
 from connector import Connector
 import requests
-#from utils import filter_for_data
-import json
+
 
 
 class Engine(ABC):
     key_word = 'python'
     per_page = 20
-    vacancies_count = 20
+    vacancies_count = 1000
     @abstractmethod
     def get_request(self):
         '''
@@ -17,7 +16,7 @@ class Engine(ABC):
         pass
 
     @staticmethod
-    def get_connector(file_name):
+    def get_connector(file_name: str):
             '''
             Возвращает экземпляр класса Connector
             '''
@@ -36,10 +35,10 @@ class Engine(ABC):
         self.vacancies_count = vacancies_count
 
 
-    def helper_func_request(self, url, headers, get_vacancies):
+    def helper_func_request(self, url: str, headers: dict, get_vacancies: str):
         '''
         Вспомогательный метод для взаимодействия с API,
-        перед вызовом в классе необходимо обозначить след. параметры: url, headers, get_vacancies
+        создает файл с данными по N вакансий (количество определяется параметром - vacancies_count, ключевое слово - key_word)
         '''
         page = 1
         result = []
@@ -50,25 +49,33 @@ class Engine(ABC):
                 json_file = response.json()
                 result += json_file.get(get_vacancies)
         create_file = self.get_connector(self.json_file_name)
-
         create_file.insert(result)
-        return f'В файл {self.json_file_name} записано {len(result)} вакансий'
+        return len(result)
+
 
 
 class HH(Engine):
+    '''
+    Класс дополняет функциональность родительской функции helper_func_request под
+    параметры площадки hh.ru
+    '''
+
     __url = 'https://api.hh.ru/vacancies'
     json_file_name = 'hh_vacancies.json'
     def get_request(self):
         url = f'{self.__url}?text={self.key_word}'
         headers = {}
         get_vacancies = 'items'
-        self.helper_func_request(url, headers, get_vacancies)
-        #filter_for_data(self.json_file_name, 'name', 'salary', 'salary', 'address', 'city', 'alternate_url', 'snippet', 'requirement', 'responsibility')
-        return f'В файл {self.json_file_name} записано и отфильтровано Н вакансий'
+        return f'В файл {self.json_file_name} записано {self.helper_func_request(url, headers, get_vacancies)} вакансий'
 
 
 
 class Superjob(Engine):
+    '''
+    Класс дополняет функциональность родительской функции helper_func_request под
+    параметры площадки hh.ru
+     '''
+
     __url = 'https://api.superjob.ru/2.0/vacancies'
     __key = 'v3.r.137223458.3f7c6a4606e064cca622fb48cb7d7409873dd36d.2311f33dc783df505895dfc864565a1c103f69f4'
     json_file_name = 'sj_vacancies.json'
@@ -78,15 +85,14 @@ class Superjob(Engine):
                    'Authorization': 'Bearer r.000000010000001.example.access_token',
                    'Content-Type': 'application/x-www-form-urlencoded'}
         get_vacancies = 'objects'
-        self.helper_func_request(url, headers, get_vacancies)
-        #filter_for_data(self.json_file_name, 'profession', 'payment_from', 'payment_to', 'town', 'title', 'link', 'candidat')
-        return f'В файл {self.json_file_name} записано и отфильтровано Н вакансий'
+        return f'В файл {self.json_file_name} записано {self.helper_func_request(url, headers, get_vacancies)} вакансий'
 
 
 
 if __name__ == '__main__':
-    with open('hh_vacancies.json', encoding='utf-8') as file:
-        read_file = json.load(file)
-        for i in read_file[0]:
-            if i['salary']:
-                print(i['salary']["currency"])
+    hh = HH()
+    sj = Superjob()
+    print(hh.get_request())
+    print(sj.get_request())
+
+

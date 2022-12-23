@@ -1,21 +1,30 @@
 from connector import Connector
-import json
 
 
 class Vacancy:
+    start = 0
     __slots__ = ('name_vacancy', 'url_vacancy', 'description_vacancy', 'salary_vacancy')
 
-    def __init__(self, name_vacancy, url_vacancy, description_vacancy, salary_vacancy):
+    def __init__(self, name_vacancy: str, url_vacancy: str, description_vacancy: str, salary_vacancy: str):
         self.name_vacancy = name_vacancy
         self.url_vacancy = url_vacancy
         self.description_vacancy = description_vacancy
         self.salary_vacancy = salary_vacancy
 
+    def __lt__(self, other):
+        return self.salary_vacancy < other.salary_vacancy
+
+    def __gt__(self, other):
+        return self.salary_vacancy > other.salary_vacancy
+
+    def __eq__(self, other):
+        return self.salary_vacancy == other.salary_vacancy
+
     def __str__(self):
-        return f'{self.name_vacancy}\nСсылка на вакансию - {self.url_vacancy}\nОписание: {self.description_vacancy}\nЗП: {self.salary_vacancy}'
+        return f'{self.name_vacancy} | ссылка на вакансию - {self.url_vacancy} | описание: {self.description_vacancy} | ЗП: {self.salary_vacancy} руб/мес'
 
     def __repr__(self):
-        return f'{self.name_vacancy}\nСсылка на вакансию - {self.url_vacancy}\nОписание: {self.description_vacancy}\nЗП: {self.salary_vacancy}'
+        return f'{self.name_vacancy} | ссылка на вакансию - {self.url_vacancy} | описание: {self.description_vacancy} | ЗП: {self.salary_vacancy} руб/мес'
 
 
 
@@ -36,30 +45,25 @@ class CountMixin:
 class HHVacancy(Vacancy, CountMixin):
     """ HeadHunter Vacancy """
     json_file_name = 'hh_vacancies.json'
+    data = []
+
+    def __init__(self, name_vacancy: str, url_vacancy: str, description_vacancy: str, salary_vacancy: str, company_name: str):
+        super().__init__(name_vacancy, url_vacancy, description_vacancy, salary_vacancy)
+        self.company_name = company_name
 
     def __str__(self):
-        return f'HH: {self.company_name}, зарплата: {self.salary} руб/мес'
+        return f'HH | {self.company_name} | ' + super().__str__()
 
 
 
 class SJVacancy(Vacancy, CountMixin):
     """ SuperJob Vacancy """
     json_file_name = 'sj_vacancies.json'
+    data = []
 
     def __str__(self):
-        return f'SJ: {self.company_name}, зарплата: {self.salary} руб/мес'
+        return f'SJ | {self.company_name} | ' + super().__str__()
 
 
-def sorting(vacancies):
-    """ Должен сортировать любой список вакансий по ежемесячной оплате (gt, lt magic methods) """
-    pass
 
 
-def get_top(vacancies, top_count):
-    """ Должен возвращать {top_count} записей из вакансий по зарплате (iter, next magic methods) """
-    pass
-
-
-s = SJVacancy(1, 2, 3, 4)
-print(s.__class__.__name__)
-print(s.get_count_of_vacancy)
