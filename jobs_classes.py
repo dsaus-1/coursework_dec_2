@@ -61,6 +61,10 @@ class SJVacancy(Vacancy, CountMixin):
     json_file_name = 'sj_vacancies.json'
     data = []
 
+    def __init__(self, name_vacancy: str, url_vacancy: str, description_vacancy: str, salary_vacancy: str, company_name: str):
+        super().__init__(name_vacancy, url_vacancy, description_vacancy, salary_vacancy)
+        self.company_name = company_name
+
     def __str__(self):
         return f'SJ | {self.company_name} | ' + super().__str__()
 

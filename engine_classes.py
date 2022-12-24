@@ -3,11 +3,10 @@ from connector import Connector
 import requests
 
 
-
 class Engine(ABC):
-    key_word = 'python'
-    per_page = 20
-    vacancies_count = 1000
+    _key_word = 'python'
+    _per_page = 20
+    _vacancies_count = 100
     @abstractmethod
     def get_request(self):
         '''
@@ -25,14 +24,29 @@ class Engine(ABC):
             return connector
 
     @property
-    def attrs(self):
-        return self.key_word, self.per_page, self.vacancies_count
+    def key_word(self):
+        return self._key_word
 
-    @attrs.setter
-    def attrs(self, key_word='python', per_page=20, vacancies_count=100):
-        self.key_word = key_word
-        self.per_page = per_page
-        self.vacancies_count = vacancies_count
+    @key_word.setter
+    def key_word(self, key_word):
+        self._key_word = key_word
+
+
+    @property
+    def per_page(self):
+        return self._per_page
+
+    @per_page.setter
+    def per_page(self, per_page):
+        self._per_page = per_page
+
+    @property
+    def vacancies_count(self):
+        return self._vacancies_count
+
+    @vacancies_count.setter
+    def vacancies_count(self, vacancies_count):
+        self._vacancies_count = vacancies_count
 
 
     def helper_func_request(self, url: str, headers: dict, get_vacancies: str):
@@ -53,7 +67,6 @@ class Engine(ABC):
         return len(result)
 
 
-
 class HH(Engine):
     '''
     Класс дополняет функциональность родительской функции helper_func_request под
@@ -67,7 +80,6 @@ class HH(Engine):
         headers = {}
         get_vacancies = 'items'
         return f'В файл {self.json_file_name} записано {self.helper_func_request(url, headers, get_vacancies)} вакансий'
-
 
 
 class Superjob(Engine):

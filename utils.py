@@ -7,7 +7,7 @@ def sorting(vacancies: list):
 
 
 def get_top(vacancies: list, top_count: int):
-    """ Должен возвращать {top_count} записей из вакансий по зарплате (iter, next magic methods) """
+    """ Должен возвращать {top_count} записей из вакансий по зарплате"""
     count = 0
     while count < top_count:
         print(vacancies[count], end= '\n\n')
@@ -16,8 +16,13 @@ def get_top(vacancies: list, top_count: int):
 
 
 
-def init_hh_vacancy_class(file_name: str):
-    with open(file_name, 'r', encoding='utf-8') as file:
+def init_hh_vacancy_class():
+    '''
+    Считывает данные из файла hh_vacancies.json, с вакансиями сайта hh.ru и добавляет ссылки на экземпляры
+    класса HHVacancy со следующими данными: название кампании и вакансии, ссылка на вакансию, ЗП и описание в
+    список HHVacancy.data
+    '''
+    with open('hh_vacancies.json', 'r', encoding='utf-8') as file:
         file_read = json.load(file)
         for vacancy in file_read[0]:
             url = vacancy.get('alternate_url')
@@ -47,8 +52,13 @@ def init_hh_vacancy_class(file_name: str):
             HHVacancy.data.append(HHVacancy(name, url, description, salary, company_name))
         return HHVacancy.data
 
-def init_sj_vacancy_class(file_name: str):
-    with open(file_name, 'r', encoding='utf-8') as file:
+def init_sj_vacancy_class():
+    '''
+    Считывает данные из файла sj_vacancies.json, с вакансиями сайта sj.ru и добавляет ссылки на экземпляры
+    класса SJVacancy со следующими данными: название кампании и вакансии, ссылка на вакансию, ЗП и описание в
+    список SJVacancy.data
+    '''
+    with open('sj_vacancies.json', 'r', encoding='utf-8') as file:
         file_read = json.load(file)
         for vacancy in file_read[0]:
             url = vacancy.get('link')
@@ -69,8 +79,10 @@ def init_sj_vacancy_class(file_name: str):
                 company_name = vacancy.get('firm_name')
             except:
                 company_name = None
-            SJVacancy.data.append(HHVacancy(name, url, description, salary, company_name))
+            SJVacancy.data.append(SJVacancy(name, url, description, salary, company_name))
         return SJVacancy.data
+
+
 
 
 
