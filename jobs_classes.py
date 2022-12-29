@@ -26,6 +26,16 @@ class Vacancy:
     def __repr__(self):
         return f'{self.name_vacancy} | ссылка на вакансию - {self.url_vacancy} | описание: {self.description_vacancy} | ЗП: {self.salary_vacancy} руб/мес'
 
+    def __iter__(self):
+        self.value = -1
+        return self
+
+    def __next__(self):
+        if self.value + 1 < len(self.data):
+            self.value += 1
+            return self.data[self.value]
+        else:
+            raise StopIteration
 
 
 class CountMixin:
@@ -41,7 +51,6 @@ class CountMixin:
         return len(connector.read_file()[0])
 
 
-
 class HHVacancy(Vacancy, CountMixin):
     """ HeadHunter Vacancy """
     json_file_name = 'hh_vacancies.json'
@@ -55,7 +64,6 @@ class HHVacancy(Vacancy, CountMixin):
         return f'HH | {self.company_name} | ' + super().__str__()
 
 
-
 class SJVacancy(Vacancy, CountMixin):
     """ SuperJob Vacancy """
     json_file_name = 'sj_vacancies.json'
@@ -67,7 +75,4 @@ class SJVacancy(Vacancy, CountMixin):
 
     def __str__(self):
         return f'SJ | {self.company_name} | ' + super().__str__()
-
-
-
 

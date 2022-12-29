@@ -9,9 +9,11 @@ def sorting(vacancies: list):
 def get_top(vacancies: list, top_count: int):
     """ Должен возвращать {top_count} записей из вакансий по зарплате"""
     count = 0
-    while count < top_count:
-        print(vacancies[count], end= '\n\n')
+    for vacancy in vacancies:
+        if count >= top_count:
+            break
         count += 1
+        print(vacancy, end= '\n\n')
 
 
 def init_hh_vacancy_class():
