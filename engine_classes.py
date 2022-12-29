@@ -56,12 +56,18 @@ class Engine(ABC):
         '''
         page = 1
         result = []
+        response = requests.get(url=url + f'&page={page}', headers=headers)
+        if response.status_code == 200:
+            json_file = response.json()
+            if json_file.get('found') < self.vacancies_count:
+                self.vacancies_count = json_file.get('found')
         while self.per_page * page <= self.vacancies_count:
             response = requests.get(url=url + f'&page={page}',  headers=headers)
             page += 1
             if response.status_code == 200:
                 json_file = response.json()
                 result += json_file.get(get_vacancies)
+                print('vacancy')
         create_file = self.get_connector(self.json_file_name)
         create_file.insert(result)
         return len(result)
@@ -100,11 +106,8 @@ class Superjob(Engine):
         return f'В файл {self.json_file_name} записано {self.helper_func_request(url, headers, get_vacancies)} вакансий'
 
 
-
 if __name__ == '__main__':
     hh = HH()
     sj = Superjob()
     print(hh.get_request())
     print(sj.get_request())
-
-

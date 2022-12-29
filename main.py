@@ -13,17 +13,23 @@ if __name__ == '__main__':
                 '1. hh.ru\n2. superjob.ru\nВведите номер сайта, вакансии которого хотите вывести: [1] ')
 
             if site_selection == '1' or site_selection == '':
+                print(
+                    f'В файле найдено {HHVacancy("name", "url", "description_vacancy", "salary_vacancy", "company_name").get_count_of_vacancy} вакансий')
                 data = init_hh_vacancy_class()
                 break
             elif site_selection == '2':
+                print(
+                    f'В файле найдено {SJVacancy("name", "url", "description_vacancy", "salary_vacancy", "company_name").get_count_of_vacancy} вакансий')
                 data = init_sj_vacancy_class()
                 break
             else:
                 print('Введен некорректный номер')
     elif len(file_lst) == 1:
         if file_lst[0] == 1:
+            print(f'В файле найдено {HHVacancy("name", "url", "description_vacancy", "salary_vacancy", "company_name").get_count_of_vacancy} вакансий')
             data = init_hh_vacancy_class()
         else:
+            print(f'В файле найдено {SJVacancy("name", "url", "description_vacancy", "salary_vacancy", "company_name").get_count_of_vacancy} вакансий')
             data = init_sj_vacancy_class()
     else:
         data = creating_files()
@@ -45,11 +51,5 @@ if __name__ == '__main__':
 
     get_top(sort_data, count)
 
-
-
-
-    #
-    # init_hh_vacancy_class(hh_vacancies.json)
-    # init_sj_vacancy_class(sj_vacancies.json)
 
 

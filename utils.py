@@ -14,8 +14,6 @@ def get_top(vacancies: list, top_count: int):
         count += 1
 
 
-
-
 def init_hh_vacancy_class():
     '''
     Считывает данные из файла hh_vacancies.json, с вакансиями сайта hh.ru и добавляет ссылки на экземпляры

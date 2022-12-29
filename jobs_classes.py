@@ -38,7 +38,7 @@ class CountMixin:
         """
         connector = Connector()
         connector.data_file = self.json_file_name
-        return len(connector.read_file())
+        return len(connector.read_file()[0])
 
 
 
